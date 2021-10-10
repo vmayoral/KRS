@@ -460,7 +460,7 @@
 sudo apt-get -y install curl build-essential libssl-dev git wget <span class="se">\</span>
                           ocl-icd-* opencl-headers python3-vcstool <span class="se">\</span>
                           python3-colcon-common-extensions python3-colcon-mixin <span class="se">\</span>
-                          kpartx u-boot-tools
+                          kpartx u-boot-tools pv
 
 <span class="c1">###################################################</span>
 <span class="c1"># 2. create a new ROS 2 workspace</span>
@@ -484,7 +484,7 @@ cat <span class="s">&lt;&lt; &#39;EOF&#39; &gt; krs_alpha.repos</span>
 <span class="s">  acceleration/colcon-acceleration:</span>
 <span class="s">    type: git</span>
 <span class="s">    url: https://github.com/ros-acceleration/colcon-acceleration</span>
-<span class="s">    version: 0.2.0</span>
+<span class="s">    version: 0.1.0</span>
 <span class="s">  acceleration/ros2acceleration:</span>
 <span class="s">    type: git</span>
 <span class="s">    url: https://github.com/ros-acceleration/ros2acceleration</span>
