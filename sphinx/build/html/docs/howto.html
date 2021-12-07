@@ -377,6 +377,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-mount-a-img-file-for-inspection">How do I mount a <code class="docutils literal notranslate"><span class="pre">.img</span></code> file for inspection?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-create-an-initramfs-from-an-rootfs-partition">How do I create an initramfs from an rootfs partition?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-handle-corrupted-sd-card-img-files">How do I handle corrupted sd_card.img files?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-do-i-resize-a-rootfs-so-that-it-occupies-the-whole-sd-card">How do I resize a rootfs so that it occupies the whole SD card?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#extracting-bitstream-from-xclbin-file">Extracting bitstream from xclbin file:</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-figure-out-version-of-a-kernel-binary">How do I figure out version of a kernel binary?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-copy-an-image-to-the-sd-card-in-os-x-from-cli">How do I copy an image to the SD card in OS X from CLI?</a></li>
@@ -963,6 +964,104 @@ colcon acceleration hypervisor --dom0 vanilla --domU vanilla --ramdisk test.cpio
 <p>The current solution for this issue is to discard the sd_card.img file and create a new one from the <code class="docutils literal notranslate"><span class="pre">sd_card.img.tar.gz</span></code> file.</p>
 <p>!!! note
 This might be related to the fact that p1 in the sd_card is filling and overloading p2.</p>
+</div>
+<div class="section" id="how-do-i-resize-a-rootfs-so-that-it-occupies-the-whole-sd-card">
+<h3>How do I resize a rootfs so that it occupies the whole SD card?<a class="headerlink" href="#how-do-i-resize-a-rootfs-so-that-it-occupies-the-whole-sd-card" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Figure out which device we&#39;re targeting</span>
+root@xilinx-k26-starterkit-2020_2:/# lsblk
+NAME        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+...
+mtdblock15   <span class="m">31</span>:15   <span class="m">0</span> <span class="m">29</span>.7M  <span class="m">0</span> disk
+mmcblk0     <span class="m">179</span>:0    <span class="m">0</span> <span class="m">14</span>.9G  <span class="m">0</span> disk
+<span class="p">|</span>-mmcblk0p1 <span class="m">179</span>:1    <span class="m">0</span>  538M  <span class="m">0</span> part /media/sd-mmcblk0p1
+<span class="sb">`</span>-mmcblk0p2 <span class="m">179</span>:2    <span class="m">0</span>    3G  <span class="m">0</span> part /media/sd-mmcblk0p2
+
+<span class="c1"># Delete the existing partition and create a new one occupaying all the space</span>
+root@xilinx-k26-starterkit-2020_2:/# fdisk /dev/mmcblk0
+
+Welcome to fdisk <span class="o">(</span>util-linux <span class="m">2</span>.34<span class="o">)</span>.
+Changes will remain <span class="k">in</span> memory only, <span class="k">until</span> you decide to write them.
+Be careful before using the write command.
+
+
+Command <span class="o">(</span>m <span class="k">for</span> <span class="nb">help</span><span class="o">)</span>: p
+Disk /dev/mmcblk0: <span class="m">14</span>.86 GiB, <span class="m">15931539456</span> bytes, <span class="m">31116288</span> sectors
+Units: sectors of <span class="m">1</span> * <span class="nv">512</span> <span class="o">=</span> <span class="m">512</span> bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+Disklabel type: dos
+Disk identifier: 0xda8f6bfa
+
+Device         Boot   Start     End Sectors  Size Id Type
+/dev/mmcblk0p1 *       <span class="m">2048</span> <span class="m">1103871</span> <span class="m">1101824</span>  538M  c W95 FAT32 <span class="o">(</span>LBA<span class="o">)</span>
+/dev/mmcblk0p2      <span class="m">1103872</span> <span class="m">7419903</span> <span class="m">6316032</span>    3G <span class="m">83</span> Linux
+
+Command <span class="o">(</span>m <span class="k">for</span> <span class="nb">help</span><span class="o">)</span>: d
+Partition number <span class="o">(</span><span class="m">1</span>,2, default <span class="m">2</span><span class="o">)</span>: <span class="m">2</span>
+
+Partition <span class="m">2</span> has been deleted.
+
+Command <span class="o">(</span>m <span class="k">for</span> <span class="nb">help</span><span class="o">)</span>: p
+Disk /dev/mmcblk0: <span class="m">14</span>.86 GiB, <span class="m">15931539456</span> bytes, <span class="m">31116288</span> sectors
+Units: sectors of <span class="m">1</span> * <span class="nv">512</span> <span class="o">=</span> <span class="m">512</span> bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+Disklabel type: dos
+Disk identifier: 0xda8f6bfa
+
+Device         Boot Start     End Sectors  Size Id Type
+/dev/mmcblk0p1 *     <span class="m">2048</span> <span class="m">1103871</span> <span class="m">1101824</span>  538M  c W95 FAT32 <span class="o">(</span>LBA<span class="o">)</span>
+
+Command <span class="o">(</span>m <span class="k">for</span> <span class="nb">help</span><span class="o">)</span>: n
+Partition <span class="nb">type</span>
+   p   primary <span class="o">(</span><span class="m">1</span> primary, <span class="m">0</span> extended, <span class="m">3</span> free<span class="o">)</span>
+   e   extended <span class="o">(</span>container <span class="k">for</span> logical partitions<span class="o">)</span>
+Select <span class="o">(</span>default p<span class="o">)</span>: p
+Partition number <span class="o">(</span><span class="m">2</span>-4, default <span class="m">2</span><span class="o">)</span>: <span class="m">2</span>
+First sector <span class="o">(</span><span class="m">1103872</span>-31116287, default <span class="m">1103872</span><span class="o">)</span>:
+Last sector, +/-sectors or +/-size<span class="o">{</span>K,M,G,T,P<span class="o">}</span> <span class="o">(</span><span class="m">1103872</span>-31116287, default <span class="m">31116287</span><span class="o">)</span>:
+
+Created a new partition <span class="m">2</span> of <span class="nb">type</span> <span class="s1">&#39;Linux&#39;</span> and of size <span class="m">14</span>.3 GiB.
+Partition <span class="c1">#2 contains a ext4 signature.</span>
+
+Do you want to remove the signature? <span class="o">[</span>Y<span class="o">]</span>es/<span class="o">[</span>N<span class="o">]</span>o: N
+
+Command <span class="o">(</span>m <span class="k">for</span> <span class="nb">help</span><span class="o">)</span>: p
+
+Disk /dev/mmcblk0: <span class="m">14</span>.86 GiB, <span class="m">15931539456</span> bytes, <span class="m">31116288</span> sectors
+Units: sectors of <span class="m">1</span> * <span class="nv">512</span> <span class="o">=</span> <span class="m">512</span> bytes
+Sector size <span class="o">(</span>logical/physical<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+I/O size <span class="o">(</span>minimum/optimal<span class="o">)</span>: <span class="m">512</span> bytes / <span class="m">512</span> bytes
+Disklabel type: dos
+Disk identifier: 0xda8f6bfa
+
+Device         Boot   Start      End  Sectors  Size Id Type
+/dev/mmcblk0p1 *       <span class="m">2048</span>  <span class="m">1103871</span>  <span class="m">1101824</span>  538M  c W95 FAT32 <span class="o">(</span>LBA<span class="o">)</span>
+/dev/mmcblk0p2      <span class="m">1103872</span> <span class="m">31116287</span> <span class="m">30012416</span> <span class="m">14</span>.3G <span class="m">83</span> Linux
+
+Command <span class="o">(</span>m <span class="k">for</span> <span class="nb">help</span><span class="o">)</span>: w
+The partition table has been altered.
+Syncing disks.
+
+<span class="c1"># reboot, and then grow the file system</span>
+reboot  <span class="c1"># wait for the system to reboot</span>
+root@xilinx-k26-starterkit-2020_2:~# resize2fs /dev/mmcblk0p2
+resize2fs <span class="m">1</span>.45.3 <span class="o">(</span><span class="m">14</span>-Jul-2019<span class="o">)</span>
+Filesystem at /dev/mmcblk0p2 is mounted on /<span class="p">;</span> on-line resizing required
+<span class="nv">old_desc_blocks</span> <span class="o">=</span> <span class="m">1</span>, <span class="nv">new_desc_blocks</span> <span class="o">=</span> <span class="m">2</span>
+The filesystem on /dev/mmcblk0p2 is now <span class="m">3751552</span> <span class="o">(</span>4k<span class="o">)</span> blocks long.
+
+<span class="c1"># check the space</span>
+root@xilinx-k26-starterkit-2020_2:~# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        <span class="m">1</span>.5G  <span class="m">4</span>.0K  <span class="m">1</span>.5G   <span class="m">1</span>% /dev
+/dev/mmcblk0p2   15G  <span class="m">2</span>.5G   11G  <span class="m">19</span>% /
+tmpfs           <span class="m">2</span>.0G  164K  <span class="m">2</span>.0G   <span class="m">1</span>% /run
+tmpfs           <span class="m">2</span>.0G  212K  <span class="m">2</span>.0G   <span class="m">1</span>% /var/volatile
+/dev/mmcblk0p1  537M   46M  492M   <span class="m">9</span>% /media/sd-mmcblk0p1
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://elinux.org/RPi_Resize_Flash_Partitions">this link</a> for more details.</p>
 </div>
 <div class="section" id="extracting-bitstream-from-xclbin-file">
 <h3>Extracting bitstream from xclbin file:<a class="headerlink" href="#extracting-bitstream-from-xclbin-file" title="Permalink to this headline">¶</a></h3>
