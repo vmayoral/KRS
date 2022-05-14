@@ -356,33 +356,30 @@
 <h1>Install KRS<a class="headerlink" href="#install-krs" title="Permalink to this headline">¶</a></h1>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p><strong>KRS “alpha” release</strong></p>
-<p>KRS alpha <strong>has only been tested in Ubuntu 20.04</strong>. It assumes the following is installed in your workstation:</p>
+<p><strong>KRS “1.0” release</strong></p>
+<p>KRS 1.0 <strong>has only been tested in Ubuntu 22.04</strong>. It assumes the following is installed in your workstation:</p>
 <ul class="simple">
-<li><p><cite>Ubuntu 20.04</cite> Focal Fossa operating system (<a class="reference external" href="https://releases.ubuntu.com/20.04/ubuntu-20.04.3-desktop-amd64.iso">download</a>).</p></li>
-<li><p>the Vitis <cite>2020.2.2</cite> suite (Vitis, Vivado, Vitis HLS) (<a class="reference external" href="https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html">install instructions</a>)</p></li>
-<li><p>the ROS 2 Foxy distribution (<a class="reference external" href="https://docs.ros.org/en/foxy/Installation.html">install instructions</a>)</p></li>
+<li><p><cite>Ubuntu 22.04</cite> Jammy Jellyfish operating system.</p></li>
+<li><p>the Vitis <cite>2022.1</cite> suite (Vitis, Vivado, Vitis HLS) (<a class="reference external" href="https://www.xilinx.com/support/download/index.html">install instructions</a>)</p></li>
+<li><p>the ROS 2 Humble Hawksbill  distribution (<a class="reference external" href="https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html">install instructions</a>)</p></li>
+<li><p>Gazebo Classic 11.0 (<a class="reference external" href="https://classic.gazebosim.org/tutorials?tut=install_ubuntu">install instructions</a>)</p></li>
 </ul>
-<p>For KRS alpha documentation, refer to <a class="reference external" href="https://github.com/vmayoral/KRS/tree/krs-alpha">https://github.com/vmayoral/KRS/tree/krs-alpha</a>.</p>
+<p>For KRS documentation, refer to <a class="reference external" href="https://github.com/Xilinx/KRS">https://github.com/Xilinx/KRS</a>.</p>
 </div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p><strong>KRS “beta” release</strong></p>
-<p>KRS beta <strong>has only been tested in Ubuntu 20.04</strong>. It assumes the following is installed in your workstation:</p>
-<ul class="simple">
-<li><p><cite>Ubuntu 20.04</cite> Focal Fossa operating system (<a class="reference external" href="https://releases.ubuntu.com/20.04/ubuntu-20.04.3-desktop-amd64.iso">download</a>).</p></li>
-<li><p>the Vitis <cite>2021.2</cite> suite (Vitis, Vivado, Vitis HLS) (<a class="reference external" href="https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis.html">install instructions</a>)</p></li>
-<li><p>the ROS 2 Rolling distribution (<a class="reference external" href="https://docs.ros.org/en/rolling/Installation.html">install instructions</a>)</p></li>
-</ul>
+<div class="admonition-upstream-integration admonition">
+<p class="admonition-title">Upstream integration</p>
+<p>KRS is served as a group of ROS 2 packages that you can install from .deb files or from sources in any arbitrary ROS 2 workspace, enhancing it with hardware acceleration capabilities. Some of these packages have been integrated upstream to simplify the development flow into the ROS buildfarm and are available as part of ROS 2 starting from ROS 2 Humble. Some others, including <em>firmware</em> for selected boards and <em>examples</em>, need to be fetched manually at desire.</p>
+<p>The following demonstrates how to create a new ROS 2 overlay workspace and fetch the KRS packages, including some acceleration examples:</p>
 </div>
-<div class="admonition-dependencies admonition">
-<p class="admonition-title">Dependencies</p>
-<p>KRS is served as a group of ROS 2 packages that you can install in any arbitrary ROS 2 workspace, enhancing it with hardware acceleration capabilities. The following demonstrates how to create a new ROS 2 overlay workspace and fetch the KRS packages, including some acceleration examples:</p>
+<div class="admonition-ignition-gazebo-vs-gazebo-classic admonition">
+<p class="admonition-title">Ignition Gazebo vs Gazebo Classic</p>
+<p>With ROS 2 Humble, Open Robotics hints again the community to align with Gazebo Ignition workflows. ROS 2 Humble ships with Ignition Gazebo (renamed to “Gazebo”). Installing Gazebo Classic (Gazebo 11.0) is still possible but requires some work-arounds. Some of the examples below were developed with Gazebo Classic. In turn, examples might be rewritten with Ignition Gazebo (“Gazebo”) to facilitate the flows.</p>
 </div>
 <p><a class="reference external" href="https://asciinema.org/a/434953"><img alt="asciicast" src="https://asciinema.org/a/434953.svg" /></a></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1">###################################################</span>
-<span class="c1"># 0. install Vitis 2021.2, and ROS 2 Rolling,</span>
-      <span class="c1">#  see above</span>
+<span class="c1"># 0. install Vitis 2022.1 https://www.xilinx.com/support/download.html       </span>
+<span class="c1">#   and ROS 2 Rolling https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html</span>
+<span class="c1">#    we recommend the Desktop-Full flavour (ros-humble-desktop-full)</span>
 <span class="c1">###################################################</span>
 
 <span class="c1">###################################################</span>
@@ -394,7 +391,8 @@ sudo apt-get -y install curl build-essential libssl-dev git wget <span class="se
                           kpartx u-boot-tools pv
 
 <span class="c1">###################################################</span>
-<span class="c1"># 2. create a new ROS 2 workspace</span>
+<span class="c1"># 2. create a new ROS 2 workspace with examples and</span>
+<span class="c1">#    firmware for KV260</span>
 <span class="c1">###################################################</span>
 mkdir -p ~/krs_ws/src<span class="p">;</span> <span class="nb">cd</span> ~/krs_ws
 
