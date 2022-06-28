@@ -807,7 +807,8 @@ apt update <span class="o">&amp;&amp;</span> apt install -y <span class="se">\</
   wget
 
 <span class="c1"># build overlay workspace</span>
-<span class="nb">cd</span> /ros2_ws<span class="p">;</span> colcon build --merge-install
+<span class="nb">cd</span> /ros2_ws
+colcon build --merge-install --packages-ignore acceleration_firmware_kr260
 
 <span class="c1">###################################################</span>
 <span class="c1"># 8. Run one of the packages</span>
