@@ -743,7 +743,14 @@ vcs import src --recursive &lt; krs_humble.repos  <span class="c1"># about 3 min
 <span class="c1"># packages. If one builds ROS 2 from the source the directory might</span>
 <span class="c1"># vary (e.g. ~/ros2_humble/ros2-linux).</span>
 <span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/usr/bin&quot;</span>:<span class="nv">$PATH</span>  <span class="c1"># FIXME: adjust path for CMake 3.5+</span>
-colcon build --merge-install  <span class="c1"># about 20 mins in an AMD Ryzen 5 PRO 4650G,</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Next step is going to ask for the <em>sudo password</em>, make sure to enter it appropriately, otherwise the build
+will go on indefinitely.</p>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>colcon build --merge-install  <span class="c1"># about 20 mins in an AMD Ryzen 5 PRO 4650G,</span>
                               <span class="c1"># mostly spent installing ROS 2 and deps. into</span>
                               <span class="c1"># the sysroot</span>
 
